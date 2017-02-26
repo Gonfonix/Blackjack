@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PittProject3 {
+public class Blackjack {
 
 	ArrayList<Card> hand;
 	private static ArrayList<Card> printHand;
@@ -27,7 +27,7 @@ public class PittProject3 {
 	private static boolean askName = true;
 	//private static KeyEvent catchException;
 
-	public PittProject3(Deck deck) {
+	public Blackjack(Deck deck) {
 		hand = new ArrayList<>();
 		aHand = new Card[]{};
 		int AceCounter=0;
@@ -138,7 +138,7 @@ public class PittProject3 {
 			Deck deck = new Deck();
 			deck.shuffle();
 			AceCounter = 0;
-			PittProject3 dealer = new PittProject3(deck);
+			Blackjack dealer = new Blackjack(deck);
 			List<Card> hand = new ArrayList<>();
 			hand.add(deck.drawCard());
 			hand.add(deck.drawCard());
