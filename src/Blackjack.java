@@ -131,7 +131,7 @@ public class Blackjack {
 		Scanner money = new Scanner(System.in);
 
 		while (askName == true) {
-			System.out.println("Welcome to Gonfonix's! Name please?");
+			System.out.println("Welcome to Gonfonix's Casino! Name please?");
 			name = scan.nextLine();
 			askName = false;
 		}
