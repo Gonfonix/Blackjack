@@ -6,39 +6,46 @@ import java.util.Arrays;
 
 public class Blackjack {
 
-	ArrayList<Card> hand;
+	static ArrayList<Card> hand;
+	static ArrayList<Card> hand2 = hand;
 	private static ArrayList<Card> printHand;
 
 	private static int handvalue = 0;
-	private static int handvalue2 = handvalue;
+	private static int handvaluePrint = 0;
+	private static int handvalue2 = 0;
 	private static boolean dealerBusted = true;
 	private static boolean showFirstCard = true;
-	private Card[] aHand;
+	private static Card[] aHand;
 	private static int AceCounter;
-	private static int AceCounter2 = AceCounter;
+	private static int AceCounter2 = 0;
 	private static int dealerhandvalue = 0;
+	private static int dealerhand;
+	//private static int dealerhand = takeTurn(deck);
 	private static String resetDealer;
 	private static int cash = 0;
 	private static int bet;
 	private static int x = 0;
 	private static String name = "";
 	private static boolean run;
+	private static boolean askBetAgain = true;
 	private static boolean runBet;
 	private static boolean askName = true;
+	private static boolean dealerStands = false;
+	private static boolean standRan = false;
 	//private static KeyEvent catchException;
 
 	public Blackjack(Deck deck) {
 		hand = new ArrayList<>();
 		aHand = new Card[]{};
-		int AceCounter=0;
+		int AceCounter = 0;
 		for(int i = 0; i < 2; i++) {
 			hand.add(deck.drawCard());
 		}
 		aHand = hand.toArray(aHand);
-		for(int i = 0; i < aHand.length; i++)
+		for(int i = 0; i < aHand.length; i ++)
 		{
 			handvalue += aHand[i].getValue();
-			if(aHand[i].getValue() == 11)
+			if (aHand[i].getValue()==11)
 			{
 				AceCounter ++;
 			}
@@ -50,37 +57,40 @@ public class Blackjack {
 		}
 	}
 
-	public void showFirstCard() {
+	public static void showFirstCard() {
 		Card[] firstCard = new Card[]{};
 		firstCard = hand.toArray(firstCard);
 		System.out.println("["+firstCard[0]+"]");
 		dealerhandvalue = firstCard[0].getValue();
 	}
 
-	public void Hit(Deck deck) {
+	public static void Hit(Deck deck) {
 		hand.add(deck.drawCard());
 		aHand = hand.toArray(aHand);
 		handvalue = 0;
-		for (int i = 0; i < aHand.length; i++) {
+		for(int i = 0; i < aHand.length; i++)
+		{
 			handvalue += aHand[i].getValue();
-			if(aHand[i].getValue() == 11) {
+			if(aHand[i].getValue()==11)
+			{
 				AceCounter++;
 			}
-			while (AceCounter > 0 && handvalue > 21) {
+			while(AceCounter > 0 && handvalue > 21)
+			{
 				handvalue -= 10;
 				AceCounter --;
 			}
 		}
 	}
 
-	public boolean wantsToHit() {
+	public static boolean wantsToHit() {
 		if (handvalue < 17) {
 			return true;
 		}
 		return false;
 	}
 
-	public void showHand() {
+	public static void showHand() {
 		System.out.println(hand);
 	}
 
@@ -88,23 +98,31 @@ public class Blackjack {
 		return handvalue;
 	}
 
-	/*public boolean busted(int handvalue) {
+	public static boolean busted(int handvalue) {
 		if (handvalue > 21)
 		{
 			return true;
 		}
 		return false;
-	} */
+	}
 
-	public int takeTurn(Deck deck) {
+	public static int takeTurn(Deck deck) {
 		while(wantsToHit()) {
+			/*System.out.println();
+			System.out.println("The dealer hits");
+			System.out.println(); */
 			Hit(deck);
-			/*if (dealerBusted) {
+			if(busted(handvalue))
+			{
 				break;
-			} */
+			}
 		}
-		if (handvalue <= 21) {
-		}
+		/*if (handvalue <= 21)
+		{
+			System.out.println();
+			System.out.print("The dealer stands");
+			System.out.println();
+		} */
 		return handvalue;
 	}
 
@@ -113,11 +131,11 @@ public class Blackjack {
 		Scanner money = new Scanner(System.in);
 
 		while (askName == true) {
-			System.out.println("Welcome to Mr. Gill's Casino! Name please?");
+			System.out.println("Welcome to Gonfonix's! Name please?");
 			name = scan.nextLine();
 			askName = false;
 		}
-		if (name.equalsIgnoreCase("Gill")) {
+		if (name.equalsIgnoreCase("Euro") || name.equalsIgnoreCase("Gonfonix")) {
 			System.out.println("");
 			System.out.println("EASTER EGG: You have found the name Easter egg!");
 			System.out.println("");
@@ -171,16 +189,19 @@ public class Blackjack {
 
 				if (catchEnter.equals("0")) {
 					if (cash > 0) {
-						System.out.println("You have won against the dealer with $" + cash + " to spare! The dealer has lost!");
+						System.out.println("You have ended the game with the dealer with $" + cash + " to spare.");
 					}
 					break;
 				}
 			}
 
-			while (bet > cash || bet == 0) {
+			while (bet > cash || bet == 0 || bet < 0) {
 				System.out.println();
 				if (bet == 0) {
 					System.out.println("Error: $0 is NOT a bet!");
+				}
+				else if (bet < 0) {
+					System.out.println("Error: You cannot bet negative cash");
 				}
 				else {
 					System.out.println("Error: You cannot bet more cash than you have");
@@ -190,7 +211,14 @@ public class Blackjack {
 				System.out.println();
 				System.out.println("Bet?");
 				System.out.println();
-				bet = Bet(cash);
+				catchEnter = bet2.nextLine();
+				try {
+					bet = Integer.parseInt(catchEnter);
+				}
+				catch (NumberFormatException e) {
+					System.out.println("Error: Please enter a number; not a letter / word");
+					System.out.println();
+				}
 			}
 
 			/*if (cash < 25) {
@@ -202,116 +230,93 @@ public class Blackjack {
 
 			System.out.println("Bet: $" + bet);
 			System.out.println("Dealer's hand: ");
-			dealer.showFirstCard();
+			showFirstCard();
 			System.out.println("Value: " + dealerhandvalue);
 			System.out.println(name + "'s hand: ");
 			System.out.println(hand);
-			int handvalue = calcHandValue(hand);
-			System.out.println("Value: " + handvalue);
+			int handvalue2 = calcHandValue(hand);
+			System.out.println("Value: " + handvalue2);
 
-			/*if(hasBlackJack(handvalue) && dealer.hasBlackJack())
-	        {
-	            Push();
-	        } */
+			/*if (dealerhandvalue == handvalue2)
+			{
+				Push();
+				break;
+			}*/
 
 			System.out.println("Move? (hit/stay)");
 			Scanner hitorstand = new Scanner(System.in);
 			String hitter = hitorstand.nextLine();
+
 			if (!isHitorStand(hitter)) {
 				System.out.println("Please enter 'hit' or 'stay'");
 				hitter = hitorstand.nextLine();
 			}
-			while (hitter.equalsIgnoreCase("hit") || hitter.equalsIgnoreCase("stay")) {
-				if (hitter.equalsIgnoreCase("hit")) {
-					int deal = 0;
-					Hit(deck, hand);
-					System.out.println("Bet: $" + bet);
-					System.out.println("Dealer's hand: ");
-					if (showFirstCard == true) {
-						dealer.showFirstCard();
-						System.out.println("Value: " + dealerhandvalue);
-						deal = dealerhandvalue;
-					}
-					else {
-						dealer.showHand();
+			//while (hitter.equalsIgnoreCase("hit") || hitter.equalsIgnoreCase("stay")) {
+			while (hitter.equalsIgnoreCase("hit")) {
+				Hit2(deck, hand);
+				handvalue = 0;
+				System.out.println("Bet: $" + bet);
+				System.out.println("Dealer's hand: ");
+				showFirstCard();
+				System.out.println("Value: " + dealerhandvalue);
+				System.out.println(name + "'s hand:");
+				System.out.println(hand);
+				handvalue2 = calcHandValue(hand);
+				System.out.println("Value: " + handvalue2);
 
-						System.out.println("Value: " + getHandValue());
-						deal = getHandValue();
-					}
-					System.out.println(name + "'s hand:");
-					System.out.println(hand);
-					handvalue = calcHandValue(hand);
-					System.out.println("Value: " + handvalue);
-
-					int you = handvalue;
-					if (you == deal)
-					{
-						Push();
-						hitter = "";
-						break;
-					}
-
-					if (handvalue > 21) {
-						Lose();
-						break;
-					}
-					else {
-
-						System.out.println("Move? (hit/stay)");
-						hitter = hitorstand.nextLine();
-					}
-
+				if (handvalue2 > 21) {
+					Lose();
+					break;
 				}
-				if (hitter.equalsIgnoreCase("stay")) {
-					showFirstCard = false;
-					int dealerhand = getHandValue();
-					System.out.println("");
-					System.out.println("Bet: $" + bet);
-					System.out.println("Dealer's hand: ");
-					/*if (dealerhand > 21) {
-						dealer.showFirstCard();
-						System.out.println("Value: " + dealerhandvalue);
-					} */
-					//else {
-					dealer.showHand();
+				else {
 
-					System.out.println("Value: " + dealerhand);
-					//}
-					System.out.println(name + "'s hand:");
-					System.out.println(hand);
-					System.out.println("Value: " + handvalue);
-
-					int you = handvalue;
-					int deal = dealerhand;
-					if (you == deal)
-					{
-						Push();
-						hitter = "";
-						break;
-					}
-
-					if (dealerhand > 21) {
-						Win();
-						showFirstCard = true;
-						break;
-					}
-
-					else {
-						if (dealerhand >= 17) {
-							System.out.println();
-							System.out.println("The dealer stands");
-							System.out.println();
-							hitter = "hit";
-
-						}
-						else {
-							System.out.println("Move? (hit/stay)");
-							hitter = hitorstand.nextLine();
-						}
-
-					}
+					System.out.println("Move? (hit/stay)");
+					hitter = hitorstand.nextLine();
 				}
+
 			}
+
+			if (hitter.equalsIgnoreCase("stay")) {
+				handvalue = 0;
+				int dealerhand = takeTurn(deck);
+				System.out.println("");
+				System.out.println("Bet: $" + bet);
+				System.out.println("Dealer's hand: ");
+				showHand();
+				System.out.println("Value: " + dealerhand);
+				System.out.println(name + "'s hand:");
+				System.out.println(hand);
+				System.out.println("Value: " + handvalue2);
+				System.out.println();
+				if (dealerhand >= 17) {
+					if (dealerhand <= 21) {
+						System.out.println("The dealer stands");
+						System.out.println();
+						dealerStands = true;
+
+						int you = 21 - handvalue2;
+						int deal = 21 - dealerhand;
+
+						if (you == deal) {
+							Push();
+						}
+						if (you < deal) {
+							Win();
+						}
+						if (deal < you) {
+							Lose();
+						}
+
+					}
+				}
+				if (dealerhand > 21) {
+					Win();
+				}
+
+
+
+			}
+
 
 
 
@@ -353,11 +358,11 @@ public class Blackjack {
 		for(int i = 0; i < aHand.length; i++) {
 			handvalue += aHand[i].getValue();
 			if(aHand[i].getValue() == 11) {
-				AceCounter++;
+				AceCounter2++;
 			}
 			while(AceCounter > 0 && handvalue > 21) {
 				handvalue-=10;
-				AceCounter--;
+				AceCounter2--;
 			}
 		}
 		return handvalue;
@@ -384,19 +389,19 @@ public class Blackjack {
 		return bet;
 	}
 
-	public static void Hit(Deck deck, List<Card> hand) {
+	public static void Hit2(Deck deck, List<Card> hand) {
 		hand.add(deck.drawCard());
 		Card[] aHand = new Card[]{};
 		aHand = hand.toArray(aHand);
-		handvalue = 0;
+		handvalue2 = 0;
 		for(int i=0; i<aHand.length; i++) {
-			handvalue += aHand[i].getValue();
+			handvalue2 += aHand[i].getValue();
 			if(aHand[i].getValue()==11) {
-				AceCounter++;
+				AceCounter2++;
 			}
-			while(AceCounter > 0 && handvalue > 21) {
-				handvalue -= 10;
-				AceCounter--;
+			while(AceCounter2 > 0 && handvalue2 > 21) {
+				handvalue2 -= 10;
+				AceCounter2--;
 			}
 		}
 	}
