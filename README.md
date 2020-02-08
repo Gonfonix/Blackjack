@@ -1,5 +1,5 @@
 # Blackjack
-The full game of Blackjack I made for a college University course I was in.  
+The full game of Blackjack I made for a college University course I was in way back in Highschool.  
 
 I will update this later so that there is actual graphical cards, instead of just text.  
 
